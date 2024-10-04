@@ -17,10 +17,24 @@ namespace GameEngine
 
 		m_renderThread = std::make_unique<Render::RenderThread>();
 
-		// How many objects do we want to create
-		for (int i = 0; i < 3; ++i)
-		{
-			m_Objects.push_back(new GameObject());
+		srand(time(0));
+
+		for (int i = 0; i < 100; ++i)
+		{	
+			int rand_time = rand() % 3;
+			float support = 1;
+			if (i % 2 == 0) {
+				support = -1;
+			}
+			if (rand_time == 0) {
+				m_Objects.push_back( new GravityObject());
+			} else if (rand_time == 1) {
+				m_Objects.push_back( new ControllableObject());
+			}
+			else {
+				m_Objects.push_back( new MovingObject());
+			}
+			m_Objects.back()->SetPosition(Math::Vector3f((rand_time + i % 10) * support, 0, rand_time + i % 10), 0);
 			Render::RenderObject** renderObject = m_Objects.back()->GetRenderObjectRef();
 			m_renderThread->EnqueueCommand(Render::ERC::CreateRenderObject, RenderCore::DefaultGeometry::Cube(), renderObject);
 		}
@@ -60,23 +74,7 @@ namespace GameEngine
 	{
 		for (int i = 0; i < m_Objects.size(); ++i)
 		{
-			Math::Vector3f pos = m_Objects[i]->GetPosition();
-
-			// Showcase
-			if (i == 0)
-			{
-				pos.x += 0.5f * dt;
-			}
-			else if (i == 1)
-			{
-				pos.y -= 0.5f * dt;
-			}
-			else if (i == 2)
-			{
-				pos.x += 0.5f * dt;
-				pos.y -= 0.5f * dt;
-			}
-			m_Objects[i]->SetPosition(pos, m_renderThread->GetMainFrame());
+			m_Objects[i]->Update(m_renderThread->GetMainFrame(), dt);
 		}
 	}
 }

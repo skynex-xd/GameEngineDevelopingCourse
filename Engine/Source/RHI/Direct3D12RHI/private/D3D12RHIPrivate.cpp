@@ -315,7 +315,7 @@ namespace GameEngine
 			if (m_Fence->GetCompletedValue() < m_CurrentFence)
 			{
 				HANDLE eventHandle = CreateEvent(nullptr, false, false, nullptr);
-
+				
 				hr = m_Fence->SetEventOnCompletion(m_CurrentFence, eventHandle);
 				assert(SUCCEEDED(hr));
 
@@ -329,7 +329,7 @@ namespace GameEngine
 			HRESULT hr = m_DirectCmdListAlloc[m_CurrBackBuffer]->Reset();
 			assert(SUCCEEDED(hr));
 
-			hr = m_CommandList->Reset(m_DirectCmdListAlloc[m_CurrBackBuffer].Get(), m_PSO.Get());
+ 			hr = m_CommandList->Reset(m_DirectCmdListAlloc[m_CurrBackBuffer].Get(), m_PSO.Get());
 			assert(SUCCEEDED(hr));
 
 			m_CommandList->RSSetViewports(1, &m_ScreenViewport);
